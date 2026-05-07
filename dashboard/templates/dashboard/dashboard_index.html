@@ -1,0 +1,99 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<main class="app-main">
+
+<!-- HEADER -->
+<div class="app-content-header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-6">
+                <h2 class="mb-1 fw-bold">Dashboard</h2>
+                <p class="text-muted mb-3">
+                    Welcome back {{ request.user.first_name|default:request.user.username }}! Here's what's happening.
+                </p>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                  <li class="breadcrumb-item"><a href="#">Home</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                </ol>
+              </div>
+        </div>
+    </div>
+</div>
+
+<!-- CONTENT -->
+<div class="app-content">
+<div class="container-fluid">
+
+<!-- 🔥 KPI CARDS -->
+<div class="row g-4 mb-4">
+
+    <!-- Total AGVs -->
+    <div class="col-md-3">
+        <div class="card kpi-card p-4 h-100">
+            <div class="d-flex align-items-center">
+                <div class="icon-box bg-primary-subtle text-primary me-3">
+                    <i class="bi bi-truck"></i>
+                </div>
+                <div>
+                    <div class="text-muted small">Total AGVs</div>
+                    <h3 class="mb-0 fw-bold">20</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active AGVs -->
+    <div class="col-md-3">
+        <div class="card kpi-card p-4 h-100">
+            <div class="d-flex align-items-center">
+                <div class="icon-box bg-success-subtle text-success me-3">
+                    <i class="bi bi-broadcast"></i>
+                </div>
+                <div>
+                    <div class="text-muted small">Active AGVs</div>
+                    <h3 class="mb-0 fw-bold">5</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Idle AGVs -->
+    <div class="col-md-3">
+        <div class="card kpi-card p-4 h-100">
+            <div class="d-flex align-items-center">
+                <div class="icon-box bg-warning-subtle text-warning me-3">
+                    <i class="bi bi-pause-circle"></i>
+                </div>
+                <div>
+                    <div class="text-muted small">Idle AGVs</div>
+                    <h3 class="mb-0 fw-bold">3</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tasks -->
+    <div class="col-md-3">
+        <div class="card kpi-card p-4 h-100">
+            <div class="d-flex align-items-center">
+                <div class="icon-box bg-info-subtle text-info me-3">
+                    <i class="bi bi-check2-square"></i>
+                </div>
+                <div>
+                    <div class="text-muted small">Tasks Completed Today</div>
+                    <h3 class="mb-0 fw-bold">6000</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</div>
+</div>
+
+</main>
+{% endblock %}

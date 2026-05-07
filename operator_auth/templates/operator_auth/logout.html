@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fleet Management System - Logged Out</title>
+    <link rel="stylesheet" href="{% static 'styles/logout.css' %}">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- LEFT SIDE -->
+    <div class="left-panel">
+        <h2>Logged Out</h2>
+        <p>You have successfully logged out of Fleet Management System.</p>
+
+        <a href="{% url 'login' %}" class="btn-primary">
+            Log In Again
+        </a>
+    </div>
+
+    <!-- RIGHT SIDE IMAGE -->
+    <div class="right-panel">
+        <img src="{% static 'images/operator_auth.png' %}" alt="Management System">
+    </div>
+
+</div>
+
+</body>
+</html>

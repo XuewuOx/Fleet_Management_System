@@ -1,0 +1,153 @@
+{% extends "dashboard/base.html" %}
+{% block title %}User Registration{% endblock %}
+{% block content %}
+<main class="app-main">
+    <!--begin::App Content Header-->
+    <div class="app-content-header">
+        <!--begin::Container-->
+        <div class="container-fluid" >
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6">
+                <h2 class="mb-1 fw-bold">User Registration</h2>
+              </div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                  <li class="breadcrumb-item "><a href="#">Admin</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">User Registration</li>
+                </ol>
+              </div>
+            </div>
+            <!--end::Row-->
+        </div>
+        <!--end::Container-->
+    </div>
+    <!--end::App Content Header-->
+
+    <!--begin::App Content-->
+    <div class="app-content">
+        <!-- SCROLLABLE CONTENT -->
+        <div class="container-fluid">
+            <div class="row">
+                <!--begin::Col-->
+                <div class="col-md-8">
+                    <!--begin::Form Validation-->
+                    <div class="card card-primary card-outline mb-4">
+                        <!--begin::Header-->
+                        <div class="card-header">
+                            <div class="card-title">Add New User</div>
+                        </div>
+                        <!--end::Header-->
+
+                        <!--begin::Form-->
+                       <form method="POST" action="{% url 'user_registration' %}" enctype="multipart/form-data" class="needs-validation" novalidate>
+                           {% csrf_token %}
+                           <div class="card-body">
+                               <!-- 🔥 ERROR MESSAGE -->
+                               {% if error %}
+                               <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                   {{ error }}
+                                   <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                               </div>
+                               {% endif %}
+                               <div class="row g-3">
+                                   <!-- First Name -->
+                                   <div class="col-md-6">
+                                       <label class="form-label">First Name</label>
+                                       <input type="text" name="first_name" class="form-control" required>
+                                       <div class="invalid-feedback">Enter first name</div>
+                                   </div>
+                                   <!-- Last Name -->
+                                   <div class="col-md-6">
+                                       <label class="form-label">Last Name</label>
+                                       <input type="text" name="last_name" class="form-control" required>
+                                       <div class="invalid-feedback">Enter last name</div>
+                                   </div>
+                                   <!-- Username -->
+                                   <div class="col-md-6">
+                                       <label class="form-label">Username</label>
+                                       <div class="input-group">
+                                           <span class="input-group-text">@</span>
+                                           <input type="text" name="username" class="form-control" required>
+                                       </div>
+                                       <div class="invalid-feedback">Enter username</div>
+                                   </div>
+                                   <!-- Email -->
+                                   <div class="col-md-6">
+                                       <label class="form-label">Email</label>
+                                       <input type="email" name="email" class="form-control" required>
+                                       <div class="invalid-feedback">Enter valid email</div>
+                                   </div>
+                                   <!-- Profile Picture -->
+                                   <div class="col-md-6">
+                                       <label class="form-label">Profile Picture</label>
+                                       <input type="file" name="profile_picture" class="form-control" accept="image/*">
+                                   </div>
+                                   <!-- Role -->
+                                   <div class="col-md-6">
+                                       <label class="form-label">Role</label>
+                                       <select name="role" class="form-select" required>
+                                           <option value="">Select Role</option>
+                                           <option value="admin">Admin</option>
+                                           <option value="user">User</option>
+                                           <option value="operator">Operator</option>
+                                       </select>
+                                       <div class="invalid-feedback">Select role</div>
+                                   </div>
+                                   <!-- Password -->
+                                   <div class="col-md-6">
+                                       <label class="form-label">Password</label>
+                                       <input type="password" id="password" name="password" class="form-control" required>
+                                       <div class="invalid-feedback">Enter password</div>
+                                   </div>
+                                   <!-- Confirm Password -->
+                                   <div class="col-md-6">
+                                       <label class="form-label">Confirm Password</label>
+                                       <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
+                                       <div class="invalid-feedback">Passwords must match</div>
+                                   </div>
+                               </div>
+                           </div>
+                           <!-- Footer -->
+                           <div class="card-footer text-end">
+                               <button class="btn btn-primary px-4" type="submit">
+                                   <i class="bi bi-person-plus me-1"></i> Register User
+                               </button>
+                           </div>
+                       </form>
+                        <!--end::Form-->
+                    </div>
+                    <!--end::Form Validation-->
+                </div>
+                <!--end::Col-->
+            </div>
+        </div>
+    </div>
+    <!--end::App Content-->
+
+    <!-- 🔥 BOOTSTRAP VALIDATION SCRIPT -->
+    <script>
+        (() => {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach((form) => {
+                form.addEventListener('submit', (event) => {
+                    const password = document.getElementById('password').value;
+                    const confirmPassword = document.getElementById('confirm_password').value;
+                    // 🔴 Custom password check
+                    if (password !== confirmPassword) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        document.getElementById('confirm_password').classList.add('is-invalid');
+                    }
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
+</main>
+{% endblock %}

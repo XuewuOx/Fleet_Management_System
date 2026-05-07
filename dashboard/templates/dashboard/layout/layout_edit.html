@@ -1,0 +1,890 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+{% block title %}Edit Factory Layout{% endblock %}
+{% block content %}
+
+<main class="app-main">
+
+<style>
+
+    :root{
+        --layout-bg: var(--bs-body-bg);
+        --layout-card: var(--bs-body-bg);
+        --layout-border: rgba(0,0,0,0.08);
+        --layout-text: var(--bs-body-color);
+        --layout-muted: #6b7280;
+        --grid-color: rgba(0,0,0,0.05);
+    }
+
+    [data-bs-theme="dark"]{
+        --layout-bg: #0f172a;
+        --layout-card: #111827;
+        --layout-border: rgba(255,255,255,0.08);
+        --layout-text: #f9fafb;
+        --layout-muted: #9ca3af;
+        --grid-color: rgba(255,255,255,0.05);
+    }
+
+    /* =========================================
+       HEADER
+    ========================================== */
+
+    .layout-actions{
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .layout-btn{
+
+        border-radius: 14px;
+
+        padding: 10px 18px;
+
+        font-size: 14px;
+
+        font-weight: 600;
+
+        background: transparent;
+
+        transition: 0.25s;
+
+    }
+
+    .layout-btn:hover{
+        transform: translateY(-2px);
+    }
+
+    /* =========================================
+       MAIN GRID
+    ========================================== */
+
+    .editor-grid{
+
+        display: grid;
+
+        grid-template-columns: 320px 1fr;
+
+        gap: 20px;
+
+    }
+
+    /* =========================================
+       SIDEBAR
+    ========================================== */
+
+    .editor-sidebar{
+
+        background: var(--layout-card);
+
+        border: 1px solid var(--layout-border);
+
+        border-radius: 20px;
+
+        padding: 20px;
+
+        height: fit-content;
+
+    }
+
+    .sidebar-section{
+        margin-bottom: 28px;
+    }
+
+    .sidebar-title{
+
+        font-size: 15px;
+
+        font-weight: 700;
+
+        color: var(--layout-text);
+
+        margin-bottom: 16px;
+
+    }
+
+    /* =========================================
+       COMPONENTS
+    ========================================== */
+
+    .component-grid{
+
+        display: grid;
+
+        grid-template-columns: repeat(2,1fr);
+
+        gap: 14px;
+
+    }
+
+    .component-card{
+
+        border: 1px solid var(--layout-border);
+
+        border-radius: 16px;
+
+        padding: 16px;
+
+        text-align: center;
+
+        cursor: pointer;
+
+        background: var(--layout-bg);
+
+        transition: 0.25s;
+
+    }
+
+    .component-card:hover{
+
+        border-color: #3b82f6;
+
+        background: rgba(59,130,246,0.08);
+
+        transform: translateY(-2px);
+
+    }
+
+    .component-icon{
+
+        width: 54px;
+
+        height: 54px;
+
+        border-radius: 16px;
+
+        margin: auto;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        font-size: 22px;
+
+        margin-bottom: 12px;
+
+    }
+
+    .component-label{
+
+        font-size: 13px;
+
+        font-weight: 600;
+
+        color: var(--layout-text);
+
+    }
+
+    .node-icon{
+        background: rgba(59,130,246,0.15);
+        color: #2563eb;
+    }
+
+    .edge-icon{
+        background: rgba(168,85,247,0.15);
+        color: #9333ea;
+    }
+
+    /* =========================================
+       FORM
+    ========================================== */
+
+    .form-label{
+
+        font-size: 13px;
+
+        font-weight: 600;
+
+        color: var(--layout-text);
+
+        margin-bottom: 6px;
+
+    }
+
+    .form-control,
+    .form-select{
+
+        min-height: 46px;
+
+        border-radius: 12px;
+
+    }
+
+    .input-group-custom{
+        margin-bottom: 14px;
+    }
+
+    /* =========================================
+       MAP WRAPPER
+    ========================================== */
+
+    .layout-map-wrapper{
+
+        background: var(--layout-card);
+
+        border: 1px solid var(--layout-border);
+
+        border-radius: 20px;
+
+        overflow: hidden;
+
+    }
+
+    /* =========================================
+       TOOLBAR
+    ========================================== */
+
+    .layout-toolbar{
+
+        padding: 16px 20px;
+
+        border-bottom: 1px solid var(--layout-border);
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        flex-wrap: wrap;
+
+        gap: 18px;
+
+        background: var(--layout-card);
+
+    }
+
+    .toolbar-title{
+
+        font-size: 15px;
+
+        font-weight: 700;
+
+        color: var(--layout-text);
+
+    }
+
+    .toolbar-buttons{
+
+        display: flex;
+
+        gap: 10px;
+
+    }
+
+    .tool-btn{
+
+        width: 44px;
+
+        height: 44px;
+
+        border-radius: 14px;
+
+        border: 1px solid var(--layout-border);
+
+        background: transparent;
+
+        color: var(--layout-text);
+
+        font-size: 16px;
+
+        transition: 0.25s;
+
+    }
+
+    .tool-btn:hover{
+
+        background: rgba(59,130,246,0.10);
+
+        border-color: #3b82f6;
+
+        color: #3b82f6;
+
+    }
+
+    /* =========================================
+       MAP
+    ========================================== */
+
+    .map-container{
+
+        padding: 16px;
+
+        overflow-x: auto;
+
+        overflow-y: hidden;
+
+        background: var(--layout-card);
+
+        scrollbar-width: thin;
+
+        scrollbar-color: #64748b transparent;
+
+    }
+
+    .map-container::-webkit-scrollbar{
+        height: 10px;
+    }
+
+    .map-container::-webkit-scrollbar-thumb{
+        background: #64748b;
+        border-radius: 20px;
+    }
+
+    #warehouse-svg{
+
+        width: 100%;
+
+        min-width: 1200px;
+
+        height: 420px;
+
+        background: var(--layout-bg);
+
+        border-radius: 18px;
+
+        border: 1px solid var(--layout-border);
+
+        transition: 0.3s;
+
+        display: block;
+
+    }
+
+    /* =========================================
+       SVG STYLES
+    ========================================== */
+
+    .grid-line{
+        stroke: var(--grid-color);
+        stroke-width: 1;
+    }
+
+    .path-line{
+        stroke: #3b82f6;
+        stroke-width: 5;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .loading-node{
+        fill: #2563eb;
+        stroke: white;
+        stroke-width: 3;
+    }
+
+    .unloading-node{
+        fill: #f97316;
+        stroke: white;
+        stroke-width: 3;
+    }
+
+    .junction-node{
+        fill: #22c55e;
+        stroke: white;
+        stroke-width: 3;
+    }
+
+    .waypoint-node{
+        fill: #94a3b8;
+        stroke: white;
+        stroke-width: 3;
+    }
+
+    .obstacle{
+        fill: #ef4444;
+        opacity: 0.85;
+    }
+
+    .node-label{
+
+        fill: var(--layout-text);
+
+        font-size: 11px;
+
+        font-weight: 700;
+
+    }
+
+    @media(max-width:1100px){
+
+        .editor-grid{
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+    @media(max-width:768px){
+
+        #warehouse-svg{
+            min-width: 1000px;
+            height: 320px;
+        }
+
+    }
+
+</style>
+
+<!-- HEADER -->
+<div class="app-content-header">
+
+    <div class="container-fluid">
+
+        <div class="row align-items-center">
+
+            <div class="col-sm-6">
+
+                <h2 class="mb-1 fw-bold">
+                    Edit Factory Layout
+                </h2>
+
+                <p class="text-muted mb-3">
+                    Configure nodes and edges for AGV routing
+                </p>
+
+            </div>
+
+            <div class="col-sm-6">
+
+                <div class="layout-actions float-sm-end">
+
+                    <a href="{% url 'layout' %}"
+                       class="btn btn-outline-secondary layout-btn">
+
+                        <i class="bi bi-arrow-left me-2"></i>
+                        Back
+
+                    </a>
+
+                    <button class="btn btn-outline-success layout-btn">
+
+                        <i class="bi bi-check-circle me-2"></i>
+                        Save Layout
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- CONTENT -->
+<div class="app-content">
+<div class="container-fluid">
+
+    <div class="editor-grid">
+
+        <!-- SIDEBAR -->
+        <div class="editor-sidebar">
+
+            <!-- COMPONENTS -->
+            <div class="sidebar-section">
+
+                <div class="sidebar-title">
+                    Components
+                </div>
+
+                <div class="component-grid">
+
+                    <!-- NODE -->
+                    <div class="component-card">
+
+                        <div class="component-icon node-icon">
+                            <i class="bi bi-record-circle"></i>
+                        </div>
+
+                        <div class="component-label">
+                            Node
+                        </div>
+
+                    </div>
+
+                    <!-- EDGE -->
+                    <div class="component-card">
+
+                        <div class="component-icon edge-icon">
+                            <i class="bi bi-bezier2"></i>
+                        </div>
+
+                        <div class="component-label">
+                            Edge
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- NODE SETTINGS -->
+            <div class="sidebar-section">
+
+                <div class="sidebar-title">
+                    Node Settings
+                </div>
+
+                <div class="input-group-custom">
+
+                    <label class="form-label">
+                        Node ID
+                    </label>
+
+                    <input type="text"
+                           class="form-control"
+                           placeholder="Example: N1">
+
+                </div>
+
+                <div class="input-group-custom">
+
+                    <label class="form-label">
+                        Node Type
+                    </label>
+
+                    <select class="form-select">
+
+                        <option>Loading</option>
+                        <option>Unloading</option>
+                        <option>Junction</option>
+                        <option>Waypoint</option>
+
+                    </select>
+
+                </div>
+
+                <div class="input-group-custom">
+
+                    <label class="form-label">
+                        X Position
+                    </label>
+
+                    <input type="number"
+                           class="form-control"
+                           placeholder="320">
+
+                </div>
+
+                <div class="input-group-custom">
+
+                    <label class="form-label">
+                        Y Position
+                    </label>
+
+                    <input type="number"
+                           class="form-control"
+                           placeholder="180">
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- MAP -->
+        <div class="layout-map-wrapper">
+
+            <!-- TOOLBAR -->
+            <div class="layout-toolbar">
+
+                <div class="toolbar-title">
+                    Layout Editor Canvas
+                </div>
+
+                <div class="toolbar-buttons">
+
+                    <button class="tool-btn" id="zoomInBtn">
+                        <i class="bi bi-zoom-in"></i>
+                    </button>
+
+                    <button class="tool-btn" id="zoomOutBtn">
+                        <i class="bi bi-zoom-out"></i>
+                    </button>
+
+                    <button class="tool-btn" id="fullscreenBtn">
+                        <i class="bi bi-arrows-fullscreen"></i>
+                    </button>
+
+                </div>
+
+            </div>
+
+            <!-- SVG -->
+            <div class="map-container">
+
+                <svg id="warehouse-svg"></svg>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+</div>
+
+</main>
+
+<script>
+
+const svg = document.getElementById("warehouse-svg");
+
+svg.setAttribute(
+    "viewBox",
+    "0 0 1600 500"
+);
+
+/* =========================================
+   CREATE SVG
+========================================= */
+
+function createSVG(tag, attrs){
+
+    const el = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        tag
+    );
+
+    for(let key in attrs){
+        el.setAttribute(key, attrs[key]);
+    }
+
+    return el;
+}
+
+/* =========================================
+   GRID
+========================================= */
+
+function drawGrid(){
+
+    for(let x=0; x<=1600; x+=40){
+
+        svg.appendChild(
+            createSVG("line",{
+                x1:x,
+                y1:0,
+                x2:x,
+                y2:500,
+                class:"grid-line"
+            })
+        );
+    }
+
+    for(let y=0; y<=500; y+=40){
+
+        svg.appendChild(
+            createSVG("line",{
+                x1:0,
+                y1:y,
+                x2:1600,
+                y2:y,
+                class:"grid-line"
+            })
+        );
+    }
+}
+
+/* =========================================
+   PATHS
+========================================= */
+
+function drawLine(x1,y1,x2,y2){
+
+    svg.appendChild(
+        createSVG("line",{
+            x1:x1,
+            y1:y1,
+            x2:x2,
+            y2:y2,
+            class:"path-line"
+        })
+    );
+}
+
+function drawCurve(startX,startY,c1x,c1y,c2x,c2y,endX,endY){
+
+    const d = `
+        M ${startX} ${startY}
+        C ${c1x} ${c1y},
+          ${c2x} ${c2y},
+          ${endX} ${endY}
+    `;
+
+    svg.appendChild(
+        createSVG("path",{
+            d:d,
+            class:"path-line"
+        })
+    );
+}
+
+function drawPaths(){
+
+    drawLine(120,90,260,90);
+    drawLine(260,90,430,90);
+    drawLine(430,90,640,90);
+
+    drawLine(120,390,260,390);
+    drawLine(260,390,430,390);
+    drawLine(430,390,640,390);
+
+    drawCurve(120,90,180,190,40,300,120,390);
+
+    drawLine(430,90,430,390);
+
+    drawCurve(640,90,720,200,560,320,640,390);
+
+}
+
+/* =========================================
+   NODES
+========================================= */
+
+function drawNodes(){
+
+    const nodes = [
+
+        {id:"L1",x:120,y:90,type:"loading"},
+        {id:"L2",x:260,y:90,type:"loading"},
+
+        {id:"U1",x:430,y:90,type:"unloading"},
+        {id:"U2",x:640,y:90,type:"unloading"},
+
+        {id:"C1",x:120,y:390,type:"junction"},
+        {id:"C2",x:260,y:390,type:"junction"},
+
+        {id:"R1",x:430,y:390,type:"waypoint"},
+        {id:"R2",x:640,y:390,type:"waypoint"}
+
+    ];
+
+    nodes.forEach(node=>{
+
+        let className = "waypoint-node";
+
+        if(node.type==="loading"){
+            className="loading-node";
+        }
+
+        if(node.type==="unloading"){
+            className="unloading-node";
+        }
+
+        if(node.type==="junction"){
+            className="junction-node";
+        }
+
+        svg.appendChild(
+            createSVG("circle",{
+                cx:node.x,
+                cy:node.y,
+                r:16,
+                class:className
+            })
+        );
+
+        const text = createSVG("text",{
+            x:node.x,
+            y:node.y-26,
+            "text-anchor":"middle",
+            class:"node-label"
+        });
+
+        text.textContent = node.id;
+
+        svg.appendChild(text);
+
+    });
+
+}
+
+/* =========================================
+   DRAW
+========================================= */
+
+drawGrid();
+drawPaths();
+drawNodes();
+
+/* =========================================
+   ZOOM
+========================================= */
+
+let currentScale = 1;
+
+const zoomInBtn = document.getElementById("zoomInBtn");
+const zoomOutBtn = document.getElementById("zoomOutBtn");
+const fullscreenBtn = document.getElementById("fullscreenBtn");
+
+const mapContainer = document.querySelector(".map-container");
+
+zoomInBtn.addEventListener("click", () => {
+
+    currentScale += 0.1;
+
+    svg.style.transform = `scale(${currentScale})`;
+
+    svg.style.transformOrigin = "center center";
+
+});
+
+zoomOutBtn.addEventListener("click", () => {
+
+    if(currentScale > 0.6){
+
+        currentScale -= 0.1;
+
+        svg.style.transform = `scale(${currentScale})`;
+
+        svg.style.transformOrigin = "center center";
+
+    }
+
+});
+
+/* =========================================
+   FULLSCREEN
+========================================= */
+
+fullscreenBtn.addEventListener("click", async () => {
+
+    if (!document.fullscreenElement) {
+
+        await mapContainer.requestFullscreen();
+
+        mapContainer.style.background = getComputedStyle(document.documentElement)
+            .getPropertyValue('--layout-bg');
+
+        mapContainer.style.display = "flex";
+
+        mapContainer.style.alignItems = "center";
+
+        mapContainer.style.justifyContent = "center";
+
+        svg.style.width = "95vw";
+
+        svg.style.height = "95vh";
+
+    } else {
+
+        await document.exitFullscreen();
+
+        svg.style.width = "100%";
+
+        svg.style.height = "420px";
+
+    }
+
+});
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,883 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+{% block title %}Factory Layout{% endblock %}
+{% block content %}
+
+<main class="app-main">
+
+<style>
+
+    :root{
+        --layout-bg: var(--bs-body-bg);
+        --layout-card: var(--bs-body-bg);
+        --layout-border: rgba(0,0,0,0.08);
+        --layout-text: var(--bs-body-color);
+        --layout-muted: #6b7280;
+        --grid-color: rgba(0,0,0,0.05);
+    }
+
+    [data-bs-theme="dark"]{
+        --layout-bg: #0f172a;
+        --layout-card: #111827;
+        --layout-border: rgba(255,255,255,0.08);
+        --layout-text: #f9fafb;
+        --layout-muted: #9ca3af;
+        --grid-color: rgba(255,255,255,0.05);
+    }
+
+    /* =========================================
+       HEADER
+    ========================================== */
+
+    .layout-actions{
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .layout-btn{
+
+        border-radius: 14px;
+
+        padding: 10px 18px;
+
+        font-size: 14px;
+
+        font-weight: 600;
+
+        background: transparent;
+
+        transition: 0.25s;
+
+    }
+
+    .layout-btn:hover{
+        transform: translateY(-2px);
+    }
+
+    /* =========================================
+       MAP WRAPPER
+    ========================================== */
+
+    .layout-map-wrapper{
+
+        background: var(--layout-card);
+
+        border: 1px solid var(--layout-border);
+
+        border-radius: 20px;
+
+        overflow: hidden;
+
+    }
+
+    /* =========================================
+       TOOLBAR
+    ========================================== */
+
+    .layout-toolbar{
+
+        padding: 16px 20px;
+
+        border-bottom: 1px solid var(--layout-border);
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        flex-wrap: wrap;
+
+        gap: 18px;
+
+        background: var(--layout-card);
+
+    }
+
+    .layout-legend{
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 22px;
+
+        flex-wrap: wrap;
+
+    }
+
+    .legend-item{
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 10px;
+
+        color: var(--layout-text);
+
+        font-size: 14px;
+
+        font-weight: 500;
+
+    }
+
+    .legend-dot{
+
+        width: 16px;
+
+        height: 16px;
+
+        border-radius: 50%;
+
+    }
+
+    .legend-square{
+
+        width: 16px;
+
+        height: 16px;
+
+        border-radius: 4px;
+
+    }
+
+    .toolbar-buttons{
+
+        display: flex;
+
+        gap: 10px;
+
+    }
+
+    .tool-btn{
+
+        width: 44px;
+
+        height: 44px;
+
+        border-radius: 14px;
+
+        border: 1px solid var(--layout-border);
+
+        background: transparent;
+
+        color: var(--layout-text);
+
+        font-size: 16px;
+
+        transition: 0.25s;
+
+    }
+
+    .tool-btn:hover{
+
+        background: rgba(59,130,246,0.10);
+
+        border-color: #3b82f6;
+
+        color: #3b82f6;
+
+    }
+
+    /* =========================================
+       MAP
+    ========================================== */
+
+    .map-container{
+
+        padding: 16px;
+
+        overflow-x: auto;
+
+        overflow-y: hidden;
+
+        background: var(--layout-card);
+
+        scrollbar-width: thin;
+
+        scrollbar-color: #64748b transparent;
+
+    }
+
+    .map-container::-webkit-scrollbar{
+        height: 10px;
+    }
+
+    .map-container::-webkit-scrollbar-track{
+        background: transparent;
+    }
+
+    .map-container::-webkit-scrollbar-thumb{
+        background: #64748b;
+        border-radius: 20px;
+    }
+
+    #warehouse-svg{
+
+        width: 100%;
+
+        min-width: 1200px;
+
+        height: 380px;
+
+        background: var(--layout-bg);
+
+        border-radius: 18px;
+
+        border: 1px solid var(--layout-border);
+
+        transition: 0.3s;
+
+        display: block;
+
+    }
+
+    .grid-line{
+        stroke: var(--grid-color);
+        stroke-width: 1;
+    }
+
+    .path-line{
+        stroke: #3b82f6;
+        stroke-width: 5;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .loading-node{
+        fill: #2563eb;
+        stroke: white;
+        stroke-width: 3;
+    }
+
+    .unloading-node{
+        fill: #f97316;
+        stroke: white;
+        stroke-width: 3;
+    }
+
+    .junction-node{
+        fill: #22c55e;
+        stroke: white;
+        stroke-width: 3;
+    }
+
+    .waypoint-node{
+        fill: #94a3b8;
+        stroke: white;
+        stroke-width: 3;
+    }
+
+    .obstacle{
+        fill: #ef4444;
+        opacity: 0.85;
+    }
+
+    .node-label{
+
+        fill: var(--layout-text);
+
+        font-size: 11px;
+
+        font-weight: 700;
+
+    }
+
+    /* =========================================
+       KPI CARDS
+    ========================================== */
+
+    .kpi-card{
+
+        border: 1px solid var(--layout-border);
+
+        border-radius: 18px;
+
+        background: var(--layout-card);
+
+        box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+
+        transition: 0.25s;
+
+    }
+
+    .kpi-card:hover{
+
+        transform: translateY(-4px);
+
+        box-shadow: 0 12px 24px rgba(0,0,0,0.10);
+
+    }
+
+    .icon-box{
+
+        width: 60px;
+
+        height: 60px;
+
+        border-radius: 16px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        font-size: 24px;
+
+    }
+
+    @media(max-width:768px){
+
+        #warehouse-svg{
+            min-width: 1000px;
+            height: 320px;
+        }
+
+    }
+
+</style>
+
+<!-- HEADER -->
+<div class="app-content-header">
+
+    <div class="container-fluid">
+
+        <div class="row align-items-center">
+
+            <div class="col-sm-6">
+
+                <h2 class="mb-1 fw-bold">
+                    Factory Layout
+                </h2>
+
+                <p class="text-muted mb-3">
+                    AGV route and Station overview
+                </p>
+
+            </div>
+
+            <div class="col-sm-6">
+
+                <div class="layout-actions float-sm-end">
+
+                    <a href="{% url 'layout_edit' %}"
+                       class="btn btn-outline-primary layout-btn">
+
+                        <i class="bi bi-pencil-square me-2"></i>
+                        Edit Layout
+
+                    </a>
+
+                    <a href="{% url 'layout_edit' %}"
+                       class="btn btn-outline-primary layout-btn">
+
+                        <i class="bi bi-display me-2"></i>
+                        Fleet Monitoring
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- CONTENT -->
+<div class="app-content">
+<div class="container-fluid">
+
+    <!-- MAP -->
+    <div class="layout-map-wrapper mb-4">
+
+        <!-- TOOLBAR -->
+        <div class="layout-toolbar">
+
+            <div class="layout-legend">
+
+                <div class="legend-item">
+                    <div class="legend-dot" style="background:#2563eb"></div>
+                    Loading Station
+                </div>
+
+                <div class="legend-item">
+                    <div class="legend-dot" style="background:#f97316"></div>
+                    Unloading Station
+                </div>
+
+                <div class="legend-item">
+                    <div class="legend-dot" style="background:#22c55e"></div>
+                    Junction
+                </div>
+
+                <div class="legend-item">
+                    <div class="legend-dot" style="background:#94a3b8"></div>
+                    Waypoint
+                </div>
+
+                <div class="legend-item">
+                    <div class="legend-square" style="background:#ef4444"></div>
+                    Obstacle
+                </div>
+
+            </div>
+
+            <!-- TOOL BUTTONS -->
+            <div class="toolbar-buttons">
+
+                <button class="tool-btn" id="zoomInBtn">
+                    <i class="bi bi-zoom-in"></i>
+                </button>
+
+                <button class="tool-btn" id="zoomOutBtn">
+                    <i class="bi bi-zoom-out"></i>
+                </button>
+
+                <button class="tool-btn" id="fullscreenBtn">
+                    <i class="bi bi-arrows-fullscreen"></i>
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- SVG -->
+        <div class="map-container">
+
+            <svg id="warehouse-svg"></svg>
+
+        </div>
+
+    </div>
+
+    <!-- KPI CARDS -->
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-3">
+
+            <div class="card kpi-card p-4 h-100">
+
+                <div class="d-flex align-items-center">
+
+                    <div class="icon-box bg-primary-subtle text-primary me-3">
+                        <i class="bi bi-diagram-3"></i>
+                    </div>
+
+                    <div>
+
+                        <div class="text-muted small">
+                            Total Nodes
+                        </div>
+
+                        <h3 class="mb-0 fw-bold">
+                            14
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card kpi-card p-4 h-100">
+
+                <div class="d-flex align-items-center">
+
+                    <div class="icon-box bg-success-subtle text-success me-3">
+                        <i class="bi bi-bezier2"></i>
+                    </div>
+
+                    <div>
+
+                        <div class="text-muted small">
+                            Total Routes
+                        </div>
+
+                        <h3 class="mb-0 fw-bold">
+                            18
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card kpi-card p-4 h-100">
+
+                <div class="d-flex align-items-center">
+
+                    <div class="icon-box bg-warning-subtle text-warning me-3">
+                        <i class="bi bi-box-seam"></i>
+                    </div>
+
+                    <div>
+
+                        <div class="text-muted small">
+                            Loading Stations
+                        </div>
+
+                        <h3 class="mb-0 fw-bold">
+                            2
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card kpi-card p-4 h-100">
+
+                <div class="d-flex align-items-center">
+
+                    <div class="icon-box bg-danger-subtle text-danger me-3">
+                        <i class="bi bi-exclamation-square"></i>
+                    </div>
+
+                    <div>
+
+                        <div class="text-muted small">
+                            Obstacles
+                        </div>
+
+                        <h3 class="mb-0 fw-bold">
+                            1
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+</div>
+
+</main>
+
+<script>
+
+const svg = document.getElementById("warehouse-svg");
+
+svg.setAttribute(
+    "viewBox",
+    "0 0 1600 500"
+);
+
+/* =========================================
+   CREATE SVG
+========================================= */
+
+function createSVG(tag, attrs){
+
+    const el = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        tag
+    );
+
+    for(let key in attrs){
+        el.setAttribute(key, attrs[key]);
+    }
+
+    return el;
+}
+
+/* =========================================
+   GRID
+========================================= */
+
+function drawGrid(){
+
+    for(let x=0; x<=1600; x+=40){
+
+        svg.appendChild(
+            createSVG("line",{
+                x1:x,
+                y1:0,
+                x2:x,
+                y2:500,
+                class:"grid-line"
+            })
+        );
+    }
+
+    for(let y=0; y<=500; y+=40){
+
+        svg.appendChild(
+            createSVG("line",{
+                x1:0,
+                y1:y,
+                x2:1600,
+                y2:y,
+                class:"grid-line"
+            })
+        );
+    }
+}
+
+/* =========================================
+   LINES
+========================================= */
+
+function drawLine(x1,y1,x2,y2){
+
+    svg.appendChild(
+        createSVG("line",{
+            x1:x1,
+            y1:y1,
+            x2:x2,
+            y2:y2,
+            class:"path-line"
+        })
+    );
+}
+
+/* =========================================
+   CURVES
+========================================= */
+
+function drawCurve(startX,startY,c1x,c1y,c2x,c2y,endX,endY){
+
+    const d = `
+        M ${startX} ${startY}
+        C ${c1x} ${c1y},
+          ${c2x} ${c2y},
+          ${endX} ${endY}
+    `;
+
+    svg.appendChild(
+        createSVG("path",{
+            d:d,
+            class:"path-line"
+        })
+    );
+}
+
+/* =========================================
+   PATHS
+========================================= */
+
+function drawPaths(){
+
+    drawLine(120,90,260,90);
+    drawLine(260,90,430,90);
+    drawLine(430,90,640,90);
+    drawLine(640,90,860,90);
+    drawLine(860,90,1080,90);
+    drawLine(1080,90,1290,90);
+
+    drawLine(120,390,260,390);
+    drawLine(260,390,430,390);
+    drawLine(430,390,640,390);
+    drawLine(640,390,860,390);
+    drawLine(860,390,1080,390);
+    drawLine(1080,390,1290,390);
+
+    drawCurve(120,90,180,190,40,300,120,390);
+
+    drawLine(430,90,430,390);
+
+    drawCurve(640,90,720,200,560,320,640,390);
+
+    drawCurve(860,90,940,200,790,320,860,390);
+
+    drawCurve(1080,90,1170,200,1000,320,1080,390);
+
+    drawCurve(1290,90,1410,200,1210,320,1290,390);
+
+}
+
+/* =========================================
+   NODES
+========================================= */
+
+function drawNodes(){
+
+    const nodes = [
+
+        {id:"L1",x:120,y:90,type:"loading"},
+        {id:"L2",x:260,y:90,type:"loading"},
+
+        {id:"U1",x:430,y:90,type:"unloading"},
+        {id:"U2",x:640,y:90,type:"unloading"},
+        {id:"U3",x:860,y:90,type:"unloading"},
+        {id:"U4",x:1080,y:90,type:"unloading"},
+        {id:"U5",x:1290,y:90,type:"unloading"},
+
+        {id:"C2",x:120,y:390,type:"junction"},
+        {id:"C1",x:260,y:390,type:"junction"},
+        {id:"R1",x:430,y:390,type:"junction"},
+
+        {id:"R2",x:640,y:390,type:"waypoint"},
+        {id:"R3",x:860,y:390,type:"waypoint"},
+        {id:"R4",x:1080,y:390,type:"waypoint"},
+        {id:"R5",x:1290,y:390,type:"waypoint"}
+
+    ];
+
+    nodes.forEach(node=>{
+
+        let className = "waypoint-node";
+
+        if(node.type==="loading"){
+            className="loading-node";
+        }
+
+        if(node.type==="unloading"){
+            className="unloading-node";
+        }
+
+        if(node.type==="junction"){
+            className="junction-node";
+        }
+
+        svg.appendChild(
+            createSVG("circle",{
+                cx:node.x,
+                cy:node.y,
+                r:16,
+                class:className
+            })
+        );
+
+        const text = createSVG("text",{
+            x:node.x,
+            y:node.y-26,
+            "text-anchor":"middle",
+            class:"node-label"
+        });
+
+        text.textContent = node.id;
+
+        svg.appendChild(text);
+
+    });
+
+}
+
+/* =========================================
+   OBSTACLE
+========================================= */
+
+function drawObstacle(){
+
+    svg.appendChild(
+        createSVG("rect",{
+            x:190,
+            y:180,
+            width:40,
+            height:40,
+            rx:6,
+            class:"obstacle"
+        })
+    );
+
+}
+
+/* =========================================
+   DRAW ALL
+========================================= */
+
+drawGrid();
+drawPaths();
+drawNodes();
+drawObstacle();
+
+/* =========================================
+   ZOOM
+========================================= */
+
+let currentScale = 1;
+
+const zoomInBtn = document.getElementById("zoomInBtn");
+const zoomOutBtn = document.getElementById("zoomOutBtn");
+const fullscreenBtn = document.getElementById("fullscreenBtn");
+
+const mapContainer = document.querySelector(".map-container");
+
+zoomInBtn.addEventListener("click", () => {
+
+    currentScale += 0.1;
+
+    svg.style.transform = `scale(${currentScale})`;
+
+    svg.style.transformOrigin = "center center";
+
+});
+
+zoomOutBtn.addEventListener("click", () => {
+
+    if(currentScale > 0.6){
+
+        currentScale -= 0.1;
+
+        svg.style.transform = `scale(${currentScale})`;
+
+        svg.style.transformOrigin = "center center";
+
+    }
+
+});
+
+/* =========================================
+   FULLSCREEN
+========================================= */
+
+fullscreenBtn.addEventListener("click", async () => {
+
+    if (!document.fullscreenElement) {
+
+        await mapContainer.requestFullscreen();
+
+        mapContainer.style.background = getComputedStyle(document.documentElement)
+            .getPropertyValue('--layout-bg');
+
+        mapContainer.style.display = "flex";
+
+        mapContainer.style.alignItems = "center";
+
+        mapContainer.style.justifyContent = "center";
+
+        svg.style.width = "95vw";
+
+        svg.style.height = "95vh";
+
+    } else {
+
+        await document.exitFullscreen();
+
+        svg.style.width = "100%";
+
+        svg.style.height = "380px";
+
+    }
+
+});
+
+</script>
+
+{% endblock %}

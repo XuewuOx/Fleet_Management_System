@@ -1,0 +1,224 @@
+{% load static %}
+<aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+
+  <!--begin::Sidebar Brand-->
+  <div class="sidebar-brand">
+    <!--begin::Brand Link-->
+    <a href="{% url 'dashboard_index' %}" class="brand-link">
+      <!--begin::Brand Image-->
+      <img src="{% static 'images/company_logo.png' %}" alt="Company Logo" class="brand-image opacity-75 shadow"/>
+      <!--end::Brand Image-->
+      <!--begin::Brand Text-->
+      <span class="brand-text fw-light">FLEET MANAGEMENT</span>
+      <!--end::Brand Text-->
+    </a>
+    <!--end::Brand Link-->
+  </div>
+  <!--end::Sidebar Brand-->
+
+  <!--begin::Sidebar Wrapper-->
+  <div class="sidebar-wrapper">
+    <nav class="mt-2">
+      <!--begin::Sidebar Menu-->
+      <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="navigation" aria-label="Main navigation" data-accordion="false" id="navigation">
+        <li class="nav-item">
+          <a href="{% url 'dashboard_index' %}" class="nav-link {% if request.resolver_match.url_name == 'home' %}active {% endif %}">
+            <i class="nav-icon bi bi-speedometer"></i>
+            <p>Dashboard</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'dashboard_index' %}" class="nav-link {% if request.resolver_match.url_name == 'test1' %}active{% endif %}">
+            <i class="nav-icon bi bi-display"></i>
+            <p>Fleet Monitoring</p>
+          </a>
+        </li>
+        <li class="nav-item {% if request.resolver_match.url_name in 'test3' %}menu-open{% endif %}">
+                <a href="#" class="nav-link {% if request.resolver_match.url_name in 'test2 test3' %}active{% endif %}">
+                  <i class="nav-icon bi bi-box-seam-fill"></i>
+                  <p>
+                    Widgets
+                    <i class="nav-arrow bi bi-chevron-right"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="{% url 'dashboard_index' %}" class="nav-link {% if request.resolver_match.url_name == 'test2' %}active{% endif %}">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>Small Box</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{% url 'dashboard_index' %}" class="nav-link {% if request.resolver_match.url_name == 'test3' %}active fw-bold{% endif %}">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>info Box</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" class="nav-link">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>Cards</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+
+        <li class="nav-header">FLEET LAYOUT</li>
+        <li class="nav-item">
+                <a href="{% url 'layout' %}" class="nav-link">
+                  <i class="nav-icon bi bi-columns-gap"></i>
+                  <p>Layout</p>
+                </a>
+              </li>
+        <li class="nav-item">
+                <a href="{% url 'layout_edit' %}" class="nav-link">
+                  <i class="nav-icon bi bi-pencil-square"></i>
+                  <p>Edit Layout</p>
+                </a>
+              </li>
+        <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon bi bi-ui-checks-grid"></i>
+                  <p>
+                    Components
+                    <i class="nav-arrow bi bi-chevron-right"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="../docs/components/main-header.html" class="nav-link">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>Main Header</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="../docs/components/main-sidebar.html" class="nav-link">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>Main Sidebar</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+
+        <li class="nav-header">VEHICLES MANAGEMENT</li>
+        <li class="nav-item">
+                <a href="../docs/layout.html" class="nav-link">
+                  <i class="nav-icon bi bi-grip-horizontal"></i>
+                  <p>Layout</p>
+                </a>
+              </li>
+        <li class="nav-item">
+                <a href="../docs/color-mode.html" class="nav-link">
+                  <i class="nav-icon bi bi-star-half"></i>
+                  <p>Color Mode</p>
+                </a>
+              </li>
+        <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon bi bi-ui-checks-grid"></i>
+                  <p>
+                    Components
+                    <i class="nav-arrow bi bi-chevron-right"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="../docs/components/main-header.html" class="nav-link">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>Main Header</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="../docs/components/main-sidebar.html" class="nav-link">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>Main Sidebar</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+
+        <li class="nav-header">ANALYTICS</li>
+        <li class="nav-item">
+                <a href="../docs/layout.html" class="nav-link">
+                  <i class="nav-icon bi bi-grip-horizontal"></i>
+                  <p>Layout</p>
+                </a>
+              </li>
+        <li class="nav-item">
+                <a href="../docs/color-mode.html" class="nav-link">
+                  <i class="nav-icon bi bi-star-half"></i>
+                  <p>Color Mode</p>
+                </a>
+              </li>
+        <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon bi bi-ui-checks-grid"></i>
+                  <p>
+                    Components
+                    <i class="nav-arrow bi bi-chevron-right"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="../docs/components/main-header.html" class="nav-link">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>Main Header</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="../docs/components/main-sidebar.html" class="nav-link">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>Main Sidebar</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+
+        <li class="nav-header">ADMIN</li>
+        <li class="nav-item">
+          <a href="{% url 'profile' %}" class="nav-link {% if request.path == '/dashboard/profile/' %}active{% endif %}">
+            <i class="nav-icon bi bi-person-lines-fill"></i>
+            <p>My Profile</p>
+          </a>
+        </li>
+        <li class="nav-item {% if request.resolver_match.url_name in 'user_table user_registration' %}menu-open{% endif %}">
+          <a href="#" class="nav-link {% if request.resolver_match.url_name in 'user_table user_registration' %}active{% endif %}">
+            <i class="nav-icon bi bi-people-fill"></i>
+            <p>Users <i class="nav-arrow bi bi-chevron-right"></i></p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{% url 'user_table' %}" class="nav-link {% if request.resolver_match.url_name == 'user_table' %}active{% endif %}">
+                <i class="nav-icon bi bi-circle"></i>
+                <p>Users Management</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'user_registration' %}" class="nav-link {% if request.resolver_match.url_name == 'user_registration' %}active{% endif %}">
+                <i class="nav-icon bi bi-circle"></i>
+                <p>User Registration</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon bi bi-gear-wide-connected"></i>
+            <p>Setting</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="nav-link border-0 bg-transparent text-body w-100 text-start">
+              <i class="nav-icon bi bi-box-arrow-right text-danger"></i>
+              <p class="d-inline">Log Out</p>
+            </button>
+          </form>
+        </li>
+      </ul>
+      <!--end::Sidebar Menu-->
+    </nav>
+  </div>
+  <!--end::Sidebar Wrapper-->
+</aside>

@@ -1,0 +1,146 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+{% block title %}My Profile{% endblock %}
+{% block content %}
+<main class="app-main">
+
+    <!--begin::App Content Header-->
+    <div class="app-content-header">
+        <!--begin::Container-->
+        <div class="container-fluid" >
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6">
+                <h2 class="mb-1 fw-bold">My Profile</h2>
+              </div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                  <li class="breadcrumb-item"><a href="#">Admin</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">My Profile</li>
+                </ol>
+              </div>
+            </div>
+            <!--end::Row-->
+        </div>
+        <!--end::Container-->
+    </div>
+    <!--end::App Content Header-->
+
+    <!--begin::App Content-->
+    <div class="app-content">
+        <div class="container-fluid">
+            <div class="row d-flex align-items-stretch">
+                <!-- LEFT CARD -->
+                <div class="col-md-4 d-flex">
+                    <div class="card card-primary card-outline text-center p-4 w-100">
+                        <img src="{% if request.user.profile_picture %}{{ request.user.profile_picture.url }}{% else %}/media/profile_pictures/default_avatar.jpg{% endif %}" class="rounded-circle mx-auto mb-3 shadow" width="120" height="120" style="object-fit: cover;">
+                        <h4 class="mb-0">
+                            {{ request.user.first_name }} {{ request.user.last_name }}
+                        </h4>
+                        <p class="text-muted">@{{ request.user.username }}</p>
+                        <span class="badge {% if request.user.role == 'admin' %}bg-danger {% elif request.user.role == 'operator' %}bg-warning {% else %}bg-primary {% endif %}">
+                            {{ request.user.role|title }}
+                        </span>
+                        <hr>
+                        <div class="text-start small">
+                            <p><strong>Email:</strong> {{ request.user.email }}</p>
+                            <p><strong>Last Login:</strong> {{ request.user.last_login|date:"d M Y H:i" }}</p>
+                            <p><strong>Joined:</strong> {{ request.user.date_joined|date:"d M Y" }}</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- RIGHT CARD -->
+                <div class="col-md-8 d-flex">
+                    <div class="card card-outline card-primary w-100">
+
+            <div class="card-header">
+                <h5 class="card-title mb-0">Edit Profile</h5>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="card-body">
+
+                    <div class="row g-3">
+
+                        <!-- First Name -->
+                        <div class="col-md-6">
+                            <label class="form-label">First Name</label>
+                            <input type="text" name="first_name" class="form-control"
+                                   value="{{ request.user.first_name }}">
+                        </div>
+
+                        <!-- Last Name -->
+                        <div class="col-md-6">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" name="last_name" class="form-control"
+                                   value="{{ request.user.last_name }}">
+                        </div>
+
+                        <!-- Username -->
+                        <div class="col-md-6">
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-control"
+                                   value="{{ request.user.username }}" disabled>
+                        </div>
+
+                        <!-- Email (DISABLED) -->
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control"
+                                   value="{{ request.user.email }}" disabled>
+                        </div>
+
+                        <!-- Profile Picture -->
+                        <div class="col-md-6">
+                            <label class="form-label">Profile Picture</label>
+                            <input type="file" name="profile_picture" class="form-control">
+                        </div>
+
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- 🔐 CHANGE PASSWORD -->
+                    <h6 class="mb-3">Change Password</h6>
+
+                    <div class="row g-3">
+
+                        <div class="col-md-4">
+                            <label class="form-label">Current Password</label>
+                            <input type="password" name="current_password" class="form-control">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">New Password</label>
+                            <input type="password" name="new_password" class="form-control">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Confirm Password</label>
+                            <input type="password" name="confirm_password" class="form-control">
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="card-footer text-end">
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="bi bi-save me-1"></i> Update Profile
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+</div>
+</div>
+
+</main>
+{% endblock %}
