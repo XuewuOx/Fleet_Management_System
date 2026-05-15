@@ -1,358 +1,18 @@
 {% extends "dashboard/base.html" %}
 {% load static %}
 {% block title %}Factory Layout{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'styles/layout.css' %}">{% endblock %}
 {% block content %}
 
 <main class="app-main">
-
-<style>
-
-    :root{
-        --layout-bg: var(--bs-body-bg);
-        --layout-card: var(--bs-body-bg);
-        --layout-border: rgba(0,0,0,0.08);
-        --layout-text: var(--bs-body-color);
-        --layout-muted: #6b7280;
-        --grid-color: rgba(0,0,0,0.05);
-    }
-
-    [data-bs-theme="dark"]{
-        --layout-bg: #0f172a;
-        --layout-card: #111827;
-        --layout-border: rgba(255,255,255,0.08);
-        --layout-text: #f9fafb;
-        --layout-muted: #9ca3af;
-        --grid-color: rgba(255,255,255,0.05);
-    }
-
-    /* =========================================
-       HEADER
-    ========================================== */
-
-    .layout-actions{
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-    }
-
-    .layout-btn{
-
-        border-radius: 14px;
-
-        padding: 10px 18px;
-
-        font-size: 14px;
-
-        font-weight: 600;
-
-        background: transparent;
-
-        transition: 0.25s;
-
-    }
-
-    .layout-btn:hover{
-        transform: translateY(-2px);
-    }
-
-    /* =========================================
-       MAP WRAPPER
-    ========================================== */
-
-    .layout-map-wrapper{
-
-        background: var(--layout-card);
-
-        border: 1px solid var(--layout-border);
-
-        border-radius: 20px;
-
-        overflow: hidden;
-
-    }
-
-    /* =========================================
-       TOOLBAR
-    ========================================== */
-
-    .layout-toolbar{
-
-        padding: 16px 20px;
-
-        border-bottom: 1px solid var(--layout-border);
-
-        display: flex;
-
-        justify-content: space-between;
-
-        align-items: center;
-
-        flex-wrap: wrap;
-
-        gap: 18px;
-
-        background: var(--layout-card);
-
-    }
-
-    .layout-legend{
-
-        display: flex;
-
-        align-items: center;
-
-        gap: 22px;
-
-        flex-wrap: wrap;
-
-    }
-
-    .legend-item{
-
-        display: flex;
-
-        align-items: center;
-
-        gap: 10px;
-
-        color: var(--layout-text);
-
-        font-size: 14px;
-
-        font-weight: 500;
-
-    }
-
-    .legend-dot{
-
-        width: 16px;
-
-        height: 16px;
-
-        border-radius: 50%;
-
-    }
-
-    .legend-square{
-
-        width: 16px;
-
-        height: 16px;
-
-        border-radius: 4px;
-
-    }
-
-    .toolbar-buttons{
-
-        display: flex;
-
-        gap: 10px;
-
-    }
-
-    .tool-btn{
-
-        width: 44px;
-
-        height: 44px;
-
-        border-radius: 14px;
-
-        border: 1px solid var(--layout-border);
-
-        background: transparent;
-
-        color: var(--layout-text);
-
-        font-size: 16px;
-
-        transition: 0.25s;
-
-    }
-
-    .tool-btn:hover{
-
-        background: rgba(59,130,246,0.10);
-
-        border-color: #3b82f6;
-
-        color: #3b82f6;
-
-    }
-
-    /* =========================================
-       MAP
-    ========================================== */
-
-    .map-container{
-
-        padding: 16px;
-
-        overflow-x: auto;
-
-        overflow-y: hidden;
-
-        background: var(--layout-card);
-
-        scrollbar-width: thin;
-
-        scrollbar-color: #64748b transparent;
-
-    }
-
-    .map-container::-webkit-scrollbar{
-        height: 10px;
-    }
-
-    .map-container::-webkit-scrollbar-track{
-        background: transparent;
-    }
-
-    .map-container::-webkit-scrollbar-thumb{
-        background: #64748b;
-        border-radius: 20px;
-    }
-
-    #warehouse-svg{
-
-        width: 100%;
-
-        min-width: 1200px;
-
-        height: 380px;
-
-        background: var(--layout-bg);
-
-        border-radius: 18px;
-
-        border: 1px solid var(--layout-border);
-
-        transition: 0.3s;
-
-        display: block;
-
-    }
-
-    .grid-line{
-        stroke: var(--grid-color);
-        stroke-width: 1;
-    }
-
-    .path-line{
-        stroke: #3b82f6;
-        stroke-width: 5;
-        fill: none;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-    }
-
-    .loading-node{
-        fill: #2563eb;
-        stroke: white;
-        stroke-width: 3;
-    }
-
-    .unloading-node{
-        fill: #f97316;
-        stroke: white;
-        stroke-width: 3;
-    }
-
-    .junction-node{
-        fill: #22c55e;
-        stroke: white;
-        stroke-width: 3;
-    }
-
-    .waypoint-node{
-        fill: #94a3b8;
-        stroke: white;
-        stroke-width: 3;
-    }
-
-    .obstacle{
-        fill: #ef4444;
-        opacity: 0.85;
-    }
-
-    .node-label{
-
-        fill: var(--layout-text);
-
-        font-size: 11px;
-
-        font-weight: 700;
-
-    }
-
-    /* =========================================
-       KPI CARDS
-    ========================================== */
-
-    .kpi-card{
-
-        border: 1px solid var(--layout-border);
-
-        border-radius: 18px;
-
-        background: var(--layout-card);
-
-        box-shadow: 0 4px 16px rgba(0,0,0,0.04);
-
-        transition: 0.25s;
-
-    }
-
-    .kpi-card:hover{
-
-        transform: translateY(-4px);
-
-        box-shadow: 0 12px 24px rgba(0,0,0,0.10);
-
-    }
-
-    .icon-box{
-
-        width: 60px;
-
-        height: 60px;
-
-        border-radius: 16px;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        font-size: 24px;
-
-    }
-
-    @media(max-width:768px){
-
-        #warehouse-svg{
-            min-width: 1000px;
-            height: 320px;
-        }
-
-    }
-
-</style>
-
-<!-- HEADER -->
-<div class="app-content-header">
-
-    <div class="container-fluid">
-
-        <div class="row align-items-center">
-
-            <div class="col-sm-6">
-
-                <h2 class="mb-1 fw-bold">
+    <!-- HEADER -->
+    <div class="app-content-header">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h2 class="mb-1 fw-bold">
                     Factory Layout
-                </h2>
+                    </h2>
 
                 <p class="text-muted mb-3">
                     AGV route and Station overview
@@ -390,9 +50,9 @@
 
 </div>
 
-<!-- CONTENT -->
-<div class="app-content">
-<div class="container-fluid">
+    <!-- CONTENT -->
+    <div class="app-content">
+        <div class="container-fluid">
 
     <!-- MAP -->
     <div class="layout-map-wrapper mb-4">
@@ -414,12 +74,12 @@
 
                 <div class="legend-item">
                     <div class="legend-dot" style="background:#22c55e"></div>
-                    Junction
+                    Charging Station
                 </div>
 
                 <div class="legend-item">
                     <div class="legend-dot" style="background:#94a3b8"></div>
-                    Waypoint
+                    Intersection Point
                 </div>
 
                 <div class="legend-item">
@@ -580,13 +240,80 @@
 </main>
 
 <script>
+    const jsonUrl =
+    "{% static 'json/factory_layout.json' %}" +
+    "?v=" + new Date().getTime();
+    /* =========================================
+   LOAD JSON FILE
+========================================= */
 
-const svg = document.getElementById("warehouse-svg");
+fetch(jsonUrl)
 
-svg.setAttribute(
-    "viewBox",
-    "0 0 1600 500"
-);
+.then(response => {
+
+    if(!response.ok){
+
+        throw new Error(
+            "Failed to load JSON file"
+        );
+
+    }
+
+    return response.json();
+
+})
+
+.then(layoutData => {
+
+    initializeLayout(layoutData);
+
+})
+
+.catch(error => {
+
+    console.error(
+        "JSON Loading Error:",
+        error
+    );
+
+});
+
+/* =========================================
+   INITIALIZE
+========================================= */
+
+function initializeLayout(layoutData){
+
+    console.log(
+        "Layout Loaded:",
+        layoutData
+    );
+
+    drawLayout(layoutData);
+
+}
+
+/* =========================================
+   DRAW LAYOUT
+========================================= */
+
+function drawLayout(layoutData){
+
+    const svg = document.getElementById(
+        "warehouse-svg"
+    );
+
+    svg.setAttribute(
+        "viewBox",
+        `0 0 ${layoutData.playground.width} ${layoutData.playground.height}`
+    );
+
+    drawGrid(svg, layoutData);
+    drawEdges(svg, layoutData);
+    drawNodes(svg, layoutData);
+    drawObstacles(svg, layoutData);
+
+}
 
 /* =========================================
    CREATE SVG
@@ -600,173 +327,168 @@ function createSVG(tag, attrs){
     );
 
     for(let key in attrs){
-        el.setAttribute(key, attrs[key]);
+
+        el.setAttribute(
+            key,
+            attrs[key]
+        );
+
     }
 
     return el;
+
 }
 
 /* =========================================
    GRID
 ========================================= */
 
-function drawGrid(){
+function drawGrid(svg, layoutData){
 
-    for(let x=0; x<=1600; x+=40){
+    const width = layoutData.playground.width;
+    const height = layoutData.playground.height;
+    const grid = layoutData.playground.gridSize;
+
+    for(let x=0; x<=width; x+=grid){
 
         svg.appendChild(
             createSVG("line",{
                 x1:x,
                 y1:0,
                 x2:x,
-                y2:500,
+                y2:height,
                 class:"grid-line"
             })
         );
+
     }
 
-    for(let y=0; y<=500; y+=40){
+    for(let y=0; y<=height; y+=grid){
 
         svg.appendChild(
             createSVG("line",{
                 x1:0,
                 y1:y,
-                x2:1600,
+                x2:width,
                 y2:y,
                 class:"grid-line"
             })
         );
+
     }
+
 }
 
 /* =========================================
-   LINES
+   FIND NODE
 ========================================= */
 
-function drawLine(x1,y1,x2,y2){
+function getNodeById(layoutData, id){
 
-    svg.appendChild(
-        createSVG("line",{
-            x1:x1,
-            y1:y1,
-            x2:x2,
-            y2:y2,
-            class:"path-line"
-        })
+    return layoutData.nodes.find(
+        node => node.id === id
     );
-}
-
-/* =========================================
-   CURVES
-========================================= */
-
-function drawCurve(startX,startY,c1x,c1y,c2x,c2y,endX,endY){
-
-    const d = `
-        M ${startX} ${startY}
-        C ${c1x} ${c1y},
-          ${c2x} ${c2y},
-          ${endX} ${endY}
-    `;
-
-    svg.appendChild(
-        createSVG("path",{
-            d:d,
-            class:"path-line"
-        })
-    );
-}
-
-/* =========================================
-   PATHS
-========================================= */
-
-function drawPaths(){
-
-    drawLine(120,90,260,90);
-    drawLine(260,90,430,90);
-    drawLine(430,90,640,90);
-    drawLine(640,90,860,90);
-    drawLine(860,90,1080,90);
-    drawLine(1080,90,1290,90);
-
-    drawLine(120,390,260,390);
-    drawLine(260,390,430,390);
-    drawLine(430,390,640,390);
-    drawLine(640,390,860,390);
-    drawLine(860,390,1080,390);
-    drawLine(1080,390,1290,390);
-
-    drawCurve(120,90,180,190,40,300,120,390);
-
-    drawLine(430,90,430,390);
-
-    drawCurve(640,90,720,200,560,320,640,390);
-
-    drawCurve(860,90,940,200,790,320,860,390);
-
-    drawCurve(1080,90,1170,200,1000,320,1080,390);
-
-    drawCurve(1290,90,1410,200,1210,320,1290,390);
 
 }
 
 /* =========================================
-   NODES
+   DRAW EDGES
 ========================================= */
 
-function drawNodes(){
+function drawEdges(svg, layoutData){
 
-    const nodes = [
+    layoutData.edges.forEach(edge => {
 
-        {id:"L1",x:120,y:90,type:"loading"},
-        {id:"L2",x:260,y:90,type:"loading"},
+        const fromNode = getNodeById(
+            layoutData,
+            edge.from
+        );
 
-        {id:"U1",x:430,y:90,type:"unloading"},
-        {id:"U2",x:640,y:90,type:"unloading"},
-        {id:"U3",x:860,y:90,type:"unloading"},
-        {id:"U4",x:1080,y:90,type:"unloading"},
-        {id:"U5",x:1290,y:90,type:"unloading"},
+        const toNode = getNodeById(
+            layoutData,
+            edge.to
+        );
 
-        {id:"C2",x:120,y:390,type:"junction"},
-        {id:"C1",x:260,y:390,type:"junction"},
-        {id:"R1",x:430,y:390,type:"junction"},
+        if(!fromNode || !toNode){
+            return;
+        }
 
-        {id:"R2",x:640,y:390,type:"waypoint"},
-        {id:"R3",x:860,y:390,type:"waypoint"},
-        {id:"R4",x:1080,y:390,type:"waypoint"},
-        {id:"R5",x:1290,y:390,type:"waypoint"}
+        if(edge.path_type === "straight"){
 
-    ];
+            svg.appendChild(
+                createSVG("line",{
+                    x1:fromNode.x,
+                    y1:fromNode.y,
+                    x2:toNode.x,
+                    y2:toNode.y,
+                    class:"path-line"
+                })
+            );
 
-    nodes.forEach(node=>{
+        }
+
+        else if(edge.path_type === "curve"){
+
+            const cp1 =
+                edge.curve.controlPoints[0];
+
+            const cp2 =
+                edge.curve.controlPoints[1];
+
+            const d = `
+                M ${fromNode.x} ${fromNode.y}
+                C ${cp1.x} ${cp1.y},
+                  ${cp2.x} ${cp2.y},
+                  ${toNode.x} ${toNode.y}
+            `;
+
+            svg.appendChild(
+                createSVG("path",{
+                    d:d,
+                    class:"path-line"
+                })
+            );
+
+        }
+
+    });
+
+}
+
+/* =========================================
+   DRAW NODES
+========================================= */
+
+function drawNodes(svg, layoutData){
+
+    layoutData.nodes.forEach(node => {
 
         let className = "waypoint-node";
 
-        if(node.type==="loading"){
-            className="loading-node";
+        if(node.nodeType === "loading_station"){
+            className = "loading-node";
         }
 
-        if(node.type==="unloading"){
-            className="unloading-node";
+        else if(node.nodeType === "unloading_station"){
+            className = "unloading-node";
         }
 
-        if(node.type==="junction"){
-            className="junction-node";
+        else if(node.nodeType === "junction"){
+            className = "junction-node";
         }
 
         svg.appendChild(
             createSVG("circle",{
                 cx:node.x,
                 cy:node.y,
-                r:16,
+                r:18,
                 class:className
             })
         );
 
         const text = createSVG("text",{
             x:node.x,
-            y:node.y-26,
+            y:node.y - 28,
             "text-anchor":"middle",
             class:"node-label"
         });
@@ -780,104 +502,27 @@ function drawNodes(){
 }
 
 /* =========================================
-   OBSTACLE
+   DRAW OBSTACLES
 ========================================= */
 
-function drawObstacle(){
+function drawObstacles(svg, layoutData){
 
-    svg.appendChild(
-        createSVG("rect",{
-            x:190,
-            y:180,
-            width:40,
-            height:40,
-            rx:6,
-            class:"obstacle"
-        })
-    );
+    layoutData.obstacles.forEach(obstacle => {
+
+        svg.appendChild(
+            createSVG("rect",{
+                x:obstacle.x,
+                y:obstacle.y,
+                width:obstacle.width,
+                height:obstacle.height,
+                rx:6,
+                class:"obstacle"
+            })
+        );
+
+    });
 
 }
-
-/* =========================================
-   DRAW ALL
-========================================= */
-
-drawGrid();
-drawPaths();
-drawNodes();
-drawObstacle();
-
-/* =========================================
-   ZOOM
-========================================= */
-
-let currentScale = 1;
-
-const zoomInBtn = document.getElementById("zoomInBtn");
-const zoomOutBtn = document.getElementById("zoomOutBtn");
-const fullscreenBtn = document.getElementById("fullscreenBtn");
-
-const mapContainer = document.querySelector(".map-container");
-
-zoomInBtn.addEventListener("click", () => {
-
-    currentScale += 0.1;
-
-    svg.style.transform = `scale(${currentScale})`;
-
-    svg.style.transformOrigin = "center center";
-
-});
-
-zoomOutBtn.addEventListener("click", () => {
-
-    if(currentScale > 0.6){
-
-        currentScale -= 0.1;
-
-        svg.style.transform = `scale(${currentScale})`;
-
-        svg.style.transformOrigin = "center center";
-
-    }
-
-});
-
-/* =========================================
-   FULLSCREEN
-========================================= */
-
-fullscreenBtn.addEventListener("click", async () => {
-
-    if (!document.fullscreenElement) {
-
-        await mapContainer.requestFullscreen();
-
-        mapContainer.style.background = getComputedStyle(document.documentElement)
-            .getPropertyValue('--layout-bg');
-
-        mapContainer.style.display = "flex";
-
-        mapContainer.style.alignItems = "center";
-
-        mapContainer.style.justifyContent = "center";
-
-        svg.style.width = "95vw";
-
-        svg.style.height = "95vh";
-
-    } else {
-
-        await document.exitFullscreen();
-
-        svg.style.width = "100%";
-
-        svg.style.height = "380px";
-
-    }
-
-});
-
 </script>
 
 {% endblock %}

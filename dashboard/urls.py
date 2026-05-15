@@ -13,6 +13,7 @@ urlpatterns = [
     #  Layout Page
     path('layout/', layout, name='layout'),
     path('layout_edit/', layout_edit, name='layout_edit'),
+    path("save-layout/",save_layout,name="save_layout"),
 
     #  Admin Page
     path('user_registration/', user_registration, name='user_registration'),

@@ -1,5 +1,6 @@
 {% extends "dashboard/base.html" %}
 {% block title %}Dashboard{% endblock %}
+
 {% block content %}
 <main class="app-main">
 
@@ -13,12 +14,13 @@
                     Welcome back {{ request.user.first_name|default:request.user.username }}! Here's what's happening.
                 </p>
             </div>
+
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-end">
                   <li class="breadcrumb-item"><a href="#">Home</a></li>
                   <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
                 </ol>
-              </div>
+            </div>
         </div>
     </div>
 </div>
@@ -27,16 +29,17 @@
 <div class="app-content">
 <div class="container-fluid">
 
-<!-- 🔥 KPI CARDS -->
+<!-- KPI CARDS -->
 <div class="row g-4 mb-4">
 
     <!-- Total AGVs -->
     <div class="col-md-3">
-        <div class="card kpi-card p-4 h-100">
+        <div class="card kpi-card p-4 h-100 border-0">
             <div class="d-flex align-items-center">
                 <div class="icon-box bg-primary-subtle text-primary me-3">
                     <i class="bi bi-truck"></i>
                 </div>
+
                 <div>
                     <div class="text-muted small">Total AGVs</div>
                     <h3 class="mb-0 fw-bold">20</h3>
@@ -47,11 +50,12 @@
 
     <!-- Active AGVs -->
     <div class="col-md-3">
-        <div class="card kpi-card p-4 h-100">
+        <div class="card kpi-card p-4 h-100 border-0">
             <div class="d-flex align-items-center">
                 <div class="icon-box bg-success-subtle text-success me-3">
                     <i class="bi bi-broadcast"></i>
                 </div>
+
                 <div>
                     <div class="text-muted small">Active AGVs</div>
                     <h3 class="mb-0 fw-bold">5</h3>
@@ -62,11 +66,12 @@
 
     <!-- Idle AGVs -->
     <div class="col-md-3">
-        <div class="card kpi-card p-4 h-100">
+        <div class="card kpi-card p-4 h-100 border-0">
             <div class="d-flex align-items-center">
                 <div class="icon-box bg-warning-subtle text-warning me-3">
                     <i class="bi bi-pause-circle"></i>
                 </div>
+
                 <div>
                     <div class="text-muted small">Idle AGVs</div>
                     <h3 class="mb-0 fw-bold">3</h3>
@@ -77,11 +82,12 @@
 
     <!-- Tasks -->
     <div class="col-md-3">
-        <div class="card kpi-card p-4 h-100">
+        <div class="card kpi-card p-4 h-100 border-0">
             <div class="d-flex align-items-center">
                 <div class="icon-box bg-info-subtle text-info me-3">
                     <i class="bi bi-check2-square"></i>
                 </div>
+
                 <div>
                     <div class="text-muted small">Tasks Completed Today</div>
                     <h3 class="mb-0 fw-bold">6000</h3>
@@ -92,8 +98,237 @@
 
 </div>
 
+<!-- CHART SECTION -->
+<div class="row g-4">
+
+    <!-- Voltage Chart -->
+    <div class="col-lg-6">
+        <div class="card shadow-sm border-0 rounded-4 h-100">
+
+            <div class="card-header bg-transparent border-0 pt-4 px-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="fw-bold mb-1">Voltage Monitoring</h5>
+                        <small class="text-muted">
+                            Real-time AGV voltage analysis
+                        </small>
+                    </div>
+
+                    <div class="text-success fw-semibold">
+                        48.2V
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <canvas id="voltageChart" height="120"></canvas>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Current Chart -->
+    <div class="col-lg-6">
+        <div class="card shadow-sm border-0 rounded-4 h-100">
+
+            <div class="card-header bg-transparent border-0 pt-4 px-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="fw-bold mb-1">Current Monitoring</h5>
+                        <small class="text-muted">
+                            Real-time AGV current analysis
+                        </small>
+                    </div>
+
+                    <div class="text-primary fw-semibold">
+                        12.4A
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <canvas id="currentChart" height="120"></canvas>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
 </div>
 </div>
 
 </main>
+
+<!-- CHART JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const voltageCtx = document.getElementById('voltageChart');
+
+new Chart(voltageCtx, {
+    type: 'line',
+
+    data: {
+        labels: [
+            '08:00',
+            '09:00',
+            '10:00',
+            '11:00',
+            '12:00',
+            '13:00',
+            '14:00'
+        ],
+
+        datasets: [{
+            label: 'Voltage (V)',
+
+            data: [
+                47.2,
+                47.8,
+                48.1,
+                48.6,
+                48.2,
+                48.9,
+                48.2
+            ],
+
+            borderColor: '#22c55e',
+            backgroundColor: 'rgba(34,197,94,0.15)',
+            fill: true,
+            tension: 0.4,
+            borderWidth: 3,
+            pointRadius: 4,
+            pointBackgroundColor: '#22c55e'
+        }]
+    },
+
+    options: {
+        responsive: true,
+
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+
+        scales: {
+            y: {
+                grid: {
+                    color: 'rgba(200,200,200,0.1)'
+                }
+            },
+
+            x: {
+                grid: {
+                    display: false
+                }
+            }
+        }
+    }
+});
+
+
+
+const currentCtx = document.getElementById('currentChart');
+
+new Chart(currentCtx, {
+    type: 'line',
+
+    data: {
+        labels: [
+            '08:00',
+            '09:00',
+            '10:00',
+            '11:00',
+            '12:00',
+            '13:00',
+            '14:00'
+        ],
+
+        datasets: [{
+            label: 'Current (A)',
+
+            data: [
+                10.1,
+                11.5,
+                12.8,
+                11.9,
+                13.2,
+                12.4,
+                11.8
+            ],
+
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59,130,246,0.15)',
+            fill: true,
+            tension: 0.4,
+            borderWidth: 3,
+            pointRadius: 4,
+            pointBackgroundColor: '#3b82f6'
+        }]
+    },
+
+    options: {
+        responsive: true,
+
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+
+        scales: {
+            y: {
+                grid: {
+                    color: 'rgba(200,200,200,0.1)'
+                }
+            },
+
+            x: {
+                grid: {
+                    display: false
+                }
+            }
+        }
+    }
+});
+
+</script>
+
+<style>
+
+.kpi-card{
+    border-radius: 20px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+    transition: 0.3s;
+}
+
+.kpi-card:hover{
+    transform: translateY(-5px);
+}
+
+.icon-box{
+    width: 58px;
+    height: 58px;
+    border-radius: 18px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size: 1.5rem;
+}
+
+.card{
+    overflow: hidden;
+}
+
+canvas{
+    max-height: 320px;
+}
+
+</style>
+
 {% endblock %}

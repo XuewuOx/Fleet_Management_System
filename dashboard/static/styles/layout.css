@@ -1,0 +1,332 @@
+ :root{
+        --layout-bg: var(--bs-body-bg);
+        --layout-card: var(--bs-body-bg);
+        --layout-border: rgba(0,0,0,0.08);
+        --layout-text: var(--bs-body-color);
+        --layout-muted: #6b7280;
+        --grid-color: rgba(0,0,0,0.05);
+    }
+
+    [data-bs-theme="dark"]{
+        --layout-bg: #0f172a;
+        --layout-card: #111827;
+        --layout-border: rgba(255,255,255,0.08);
+        --layout-text: #f9fafb;
+        --layout-muted: #9ca3af;
+        --grid-color: rgba(255,255,255,0.05);
+    }
+
+    /* =========================================
+       HEADER
+    ========================================== */
+
+    .layout-actions{
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .layout-btn{
+
+        border-radius: 14px;
+
+        padding: 10px 18px;
+
+        font-size: 14px;
+
+        font-weight: 600;
+
+        background: transparent;
+
+        transition: 0.25s;
+
+    }
+
+    .layout-btn:hover{
+        transform: translateY(-2px);
+    }
+
+    /* =========================================
+       MAP WRAPPER
+    ========================================== */
+
+    .layout-map-wrapper{
+
+        background: var(--layout-card);
+
+        border: 1px solid var(--layout-border);
+
+        border-radius: 20px;
+
+        overflow: hidden;
+
+    }
+
+    /* =========================================
+       TOOLBAR
+    ========================================== */
+
+    .layout-toolbar{
+
+        padding: 16px 20px;
+
+        border-bottom: 1px solid var(--layout-border);
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        flex-wrap: wrap;
+
+        gap: 18px;
+
+        background: var(--layout-card);
+
+    }
+
+    .layout-legend{
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 22px;
+
+        flex-wrap: wrap;
+
+    }
+
+    .legend-item{
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 10px;
+
+        color: var(--layout-text);
+
+        font-size: 14px;
+
+        font-weight: 500;
+
+    }
+
+    .legend-dot{
+
+        width: 16px;
+
+        height: 16px;
+
+        border-radius: 50%;
+
+    }
+
+    .legend-square{
+
+        width: 16px;
+
+        height: 16px;
+
+        border-radius: 4px;
+
+    }
+
+    .toolbar-buttons{
+
+        display: flex;
+
+        gap: 10px;
+
+    }
+
+    .tool-btn{
+
+        width: 44px;
+
+        height: 44px;
+
+        border-radius: 14px;
+
+        border: 1px solid var(--layout-border);
+
+        background: transparent;
+
+        color: var(--layout-text);
+
+        font-size: 16px;
+
+        transition: 0.25s;
+
+    }
+
+    .tool-btn:hover{
+
+        background: rgba(59,130,246,0.10);
+
+        border-color: #3b82f6;
+
+        color: #3b82f6;
+
+    }
+
+    /* =========================================
+       MAP
+    ========================================== */
+
+    .map-container{
+
+        padding: 16px;
+
+        overflow-x: auto;
+
+        overflow-y: hidden;
+
+        background: var(--layout-card);
+
+        scrollbar-width: thin;
+
+        scrollbar-color: #64748b transparent;
+
+    }
+
+    .map-container::-webkit-scrollbar{
+        height: 10px;
+    }
+
+    .map-container::-webkit-scrollbar-track{
+        background: transparent;
+    }
+
+    .map-container::-webkit-scrollbar-thumb{
+        background: #64748b;
+        border-radius: 20px;
+    }
+
+    #warehouse-svg{
+
+        width: 100%;
+
+        min-width: 1200px;
+
+        height: 380px;
+
+        background: var(--layout-bg);
+
+        border-radius: 18px;
+
+        border: 1px solid var(--layout-border);
+
+        transition: 0.3s;
+
+        display: block;
+
+    }
+
+    .grid-line{
+        stroke: var(--grid-color);
+        stroke-width: 1;
+    }
+
+    .path-line{
+        stroke: #3b82f6;
+        stroke-width: 5;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .loading-node{
+        fill: #2563eb;
+        stroke: white;
+        stroke-width: 3;
+    }
+
+    .unloading-node{
+        fill: #f97316;
+        stroke: white;
+        stroke-width: 3;
+    }
+
+    .junction-node{
+        fill: #22c55e;
+        stroke: white;
+        stroke-width: 3;
+    }
+
+    .waypoint-node{
+        fill: #94a3b8;
+        stroke: white;
+        stroke-width: 3;
+    }
+
+    .obstacle{
+        fill: #ef4444;
+        opacity: 0.85;
+    }
+
+    .node-label{
+
+        fill: var(--layout-text);
+
+        font-size: 11px;
+
+        font-weight: 700;
+
+    }
+
+    /* =========================================
+       KPI CARDS
+    ========================================== */
+
+    .kpi-card{
+
+        border: 1px solid var(--layout-border);
+
+        border-radius: 18px;
+
+        background: var(--layout-card);
+
+        box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+
+        transition: 0.25s;
+
+    }
+
+    .kpi-card:hover{
+
+        transform: translateY(-4px);
+
+        box-shadow: 0 12px 24px rgba(0,0,0,0.10);
+
+    }
+
+    .icon-box{
+
+        width: 60px;
+
+        height: 60px;
+
+        border-radius: 16px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        font-size: 24px;
+
+    }
+
+    @media(max-width:768px){
+
+        #warehouse-svg{
+            min-width: 1000px;
+            height: 320px;
+        }
+
+    }
+
