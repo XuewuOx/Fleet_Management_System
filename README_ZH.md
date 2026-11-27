@@ -31,20 +31,48 @@ cd Fleet_Management_System
 source .venv/bin/activate
 ```
 
-启动服务
+### 在tmux终端里启动Django服务
+
+为提高服务器在公网的安全性，分几种情况采用不同的启动方式
+
+**(1) 工程师调试模式**：只监听本地回环地址，外部无法直连，需通过 SSH 隧道访问（推荐日常调试使用）
+
 ```bash
-# 指定端口（如 8001）
-python manage.py runserver 0.0.0.0:8001
+# 只监听 127.0.0.1:8080， 默认DEBUG模式启动
+python manage.py runserver 127.0.0.1:8080
+```
 
-# 如果不指定端口，默认端口 8000
+然后在本机Windows（非服务器）, 利用VSCode Remote SSH 远程连接和端口转发，或者在Powershell里建立一个SSH 隧道， 通过SSH隧道实现本机端口访问远程服务：
+
+```bash
+# 将服务器 8080 端口映射到本地 8080
+ssh -L 8080:127.0.0.1:8080 conets@47.94.142.219
+```
+
+隧道建立后，浏览器访问 `http://127.0.0.1:8080/`。
+
+**(2) 对外演示模式**：监听所有网络接口，接收从 `agv.efores.net:8080`、`IP:8080` 等公网访问. 采用非调试模式启动
+
+```bash
+# 监听 0.0.0.0:8080，需在 ALLOWED_HOSTS 中加入域名/公网 IP，并放行安全组端口
+DEBUG=false python manage.py runserver 0.0.0.0:8080 --insecure
+```
+注：Django的setting配置文件里，指定了从环境文件读取DEBUG环境变量，必须用小写的false才有效。 必须带参数`--insecure`
+
+**(3) 快速启动**：不安全，不推荐（无参数启动会监听 127.0.0.1:8000）
+
+```bash
+# 指定端口（如 8080），等价于监听 0.0.0.0:8080，暴露于所有网卡
+python manage.py runserver 0.0.0.0:8080
+
+# 如果不指定端口，默认监听 127.0.0.1:8000（本机可访问）
 python manage.py runserver
-
 ```
 
 启动后访问：
 
-- 首页：`http://127.0.0.1:8001/`
-- 管理后台：`http://127.0.0.1:8001/admin/`
+- 首页：`http://127.0.0.1:8080/`
+- 管理后台：`http://127.0.0.1:8080/admin/`
 
 
 ### tmux 常用操作
@@ -71,14 +99,14 @@ tmux attach -t AGVdjango
 如果不能在终端（包括 tmux 会话）中正常停止服务，可通过以下步骤强制终止：
 
 ```bash
-# 1. 查找占用 8001 端口的进程
-ss -lntp '( sport = :8001 )'
+# 1. 查找占用 8080 端口的进程
+ss -lntp '( sport = :8080 )'
 
 # 2. 终止进程（PID 以上一步输出为准）
 kill <PID>
 ```
 
-本次实际终止了 runserver 的父进程与子进程（1789411、1790189），验证 8001 已释放、无 runserver 进程。
+本次实际终止了 runserver 的父进程与子进程（1789411、1790189），验证 8080 已释放、无 runserver 进程。
 
 
 
@@ -193,10 +221,10 @@ python manage.py createsuperuser
 
 3. **不要用开发服务器对外服务**：`runserver` 仅供开发测试。生产环境请使用 `gunicorn`/`uwsgi` + `nginx`：
    ```bash
-   gunicorn core.wsgi:application -b 0.0.0.0:8001
+   gunicorn core.wsgi:application -b 0.0.0.0:8080
    ```
 
-4. **放行防火墙/安全组端口**：云服务器（如阿里云 ECS）需在安全组中开放对应端口（如 8001），本机防火墙也需放行。
+4. **放行防火墙/安全组端口**：云服务器（如阿里云 ECS）需在安全组中开放对应端口（如 8080），本机防火墙也需放行。
 
 5. **数据库版本**：Django 6.0 要求 PostgreSQL ≥ 14，请勿使用 13 及以下版本。
 

@@ -26,9 +26,10 @@ load_dotenv()  # load .env file
 SECRET_KEY = 'django-insecure-=lw&0w8=d51n0!^j)a+a=u@dmmgo#80t94u42ugm3#on#s(8j2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG 由环境变量控制：DEBUG=false 时关闭调试（注意必须小写 false）
+DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '47.94.142.219']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '47.94.142.219','agv.efores.net','agv.efores.net:8080']
 
 
 # Application definition

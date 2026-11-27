@@ -32,21 +32,49 @@ cd Fleet_Management_System
 source .venv/bin/activate
 ```
 
-Start the service:
+### Starting the Django Service in a tmux Terminal
+
+To improve the server's security on the public network, use different startup methods depending on the scenario:
+
+**(1) Engineer debugging mode**: listens only on the loopback address, so it cannot be reached directly from outside and must be accessed through an SSH tunnel (recommended for daily debugging).
 
 ```bash
-# Specify a port (e.g., 8001)
-python manage.py runserver 0.0.0.0:8001
+# Listen on 127.0.0.1:8080 only, with the default DEBUG mode enabled
+python manage.py runserver 127.0.0.1:8080
+```
 
-# If no port is specified, the default port is 8000
+Then, on your local Windows machine (not the server), either use VS Code Remote-SSH with port forwarding, or create an SSH tunnel in PowerShell to access the remote service through a local port:
+
+```bash
+# Forward the server's 8080 port to local 8080
+ssh -L 8080:127.0.0.1:8080 conets@47.94.142.219
+```
+
+Once the tunnel is established, open `http://127.0.0.1:8080/` in the browser.
+
+**(2) Public demo mode**: listens on all network interfaces and accepts access from `agv.efores.net:8080`, `IP:8080`, etc. Start it in non-debug mode:
+
+```bash
+# Listen on 0.0.0.0:8080; add the domain/public IP to ALLOWED_HOSTS and open the security-group port
+DEBUG=false python manage.py runserver 0.0.0.0:8080 --insecure
+```
+
+Note: Django's settings read the `DEBUG` environment variable; it must be lowercase `false` to take effect, and the `--insecure` flag is required.
+
+**(3) Quick start**: insecure and not recommended (starting without arguments listens on `127.0.0.1:8000`):
+
+```bash
+# Specify a port (e.g., 8080), equivalent to listening on 0.0.0.0:8080, exposed on all interfaces
+python manage.py runserver 0.0.0.0:8080
+
+# If no port is specified, the default is 127.0.0.1:8000 (local access only)
 python manage.py runserver
-
 ```
 
 After startup, visit:
 
-- Home page: `http://127.0.0.1:8001/`
-- Admin site: `http://127.0.0.1:8001/admin/`
+- Home page: `http://127.0.0.1:8080/`
+- Admin site: `http://127.0.0.1:8080/admin/`
 
 
 ### Common tmux Operations
@@ -74,14 +102,14 @@ tmux attach -t AGVdjango
 If the service cannot be stopped normally from the terminal (including a tmux session), force-terminate it with the following steps:
 
 ```bash
-# 1. Find the process occupying port 8001
-ss -lntp '( sport = :8001 )'
+# 1. Find the process occupying port 8080
+ss -lntp '( sport = :8080 )'
 
 # 2. Kill the process (use the PID from the output of the previous step)
 kill <PID>
 ```
 
-After termination, verify that port 8001 has been released and that no `runserver` processes remain.
+On the last occasion, the runserver parent and child processes (1789411, 1790189) were terminated, and it was verified that port 8080 was released and no `runserver` processes remained.
 
 
 ## Directory Structure
@@ -187,7 +215,7 @@ python manage.py createsuperuser
 
 ## Deployment Notes
 
-1. **Turn off debug mode**: In production, set `DEBUG` to `False` in `core/settings.py` and keep `SECRET_KEY` safe. Do not use the default insecure key.
+1. **Turn off debug mode**: In production, set `DEBUG` to `false` in `core/settings.py` and keep `SECRET_KEY` safe. Do not use the default insecure key.
 
 2. **Configure `ALLOWED_HOSTS`**: Add your public IP or domain to `ALLOWED_HOSTS`, otherwise external access will be rejected by Django:
    ```python
@@ -196,10 +224,10 @@ python manage.py createsuperuser
 
 3. **Do not expose the development server**: `runserver` is for development and testing only. In production, use `gunicorn`/`uwsgi` + `nginx`:
    ```bash
-   gunicorn core.wsgi:application -b 0.0.0.0:8001
+   gunicorn core.wsgi:application -b 0.0.0.0:8080
    ```
 
-4. **Open firewall/security group ports**: For cloud servers (e.g., Alibaba Cloud ECS), open the corresponding port (e.g., 8001) in the security group; the local firewall must also allow it.
+4. **Open firewall/security group ports**: For cloud servers (e.g., Alibaba Cloud ECS), open the corresponding port (e.g., 8080) in the security group; the local firewall must also allow it.
 
 5. **Database version**: Django 6.0 requires PostgreSQL ≥ 14. Do not use version 13 or lower.
 
@@ -211,6 +239,6 @@ python manage.py createsuperuser
 
 
 ## Creditors
-Xuewu Dai (xuewuOx)
-Hpone
-Yar Zar
+Xuewu Dai (xuewuOx) (www.efores.net)
+Hpone Thant <hponethant@gmail.com>
+Yar Zar Myint Hein <yar.hein@northumbria.ac.uk>
